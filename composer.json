@@ -1,0 +1,35 @@
+{
+    "name": "clearstream/xml-to-array",
+    "description": "Incredibly simple XML to array PHP converter",
+    "keywords": [
+        "convert",
+        "xml",
+        "array"
+    ],
+    "homepage": "https://github.com/clearstream/xml-to-array",
+    "license": "GPL-3.0-only",
+    "authors": [
+        {
+            "name": "Illia Sakovich",
+            "email": "illia.sakovich@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "ext-dom": "*",
+        "ext-libxml": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Clearstream\\XmlToArray\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Clearstream\\XmlToArray\\Test\\": "tests"
+        }
+    }
+}
