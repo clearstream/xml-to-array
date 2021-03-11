@@ -2,6 +2,13 @@
 
 This package provides a very simple class to convert XML string to array.
 
+**Why should I use this package?**
+
+- because you don’t like XML
+- because other packages generate inconsistent array structure
+- because you can’t serialize SimpleXML objects
+- because you just want to use arrays
+
 ## Install
 
 You can install this package via composer.
