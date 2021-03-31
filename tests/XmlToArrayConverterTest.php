@@ -85,13 +85,13 @@ XML;
     {
         $xml = <<<'XML'
 <?xml version="1.0" encoding="UTF-8"?>
-<response>
+<root>
     <name>Illia</name>
-</response>
+</root>
 XML;
 
         $expected = [
-            'response' => [
+            'root' => [
                 '#text' => '',
                 'name' => [
                     [
@@ -111,15 +111,15 @@ XML;
     {
         $xml = <<<'XML'
 <?xml version="1.0" encoding="UTF-8"?>
-<response>
+<root>
     <article />
-</response>
+</root>
 XML;
 
         $expected = [
-            'response' => [
+            'root' => [
                 '#text' => '',
-                'name' => [
+                'article' => [
                     [
                         '#text' => '',
                     ],
@@ -137,13 +137,13 @@ XML;
     {
         $xml = <<<'XML'
 <?xml version="1.0" encoding="UTF-8"?>
-<response>
+<root>
     <article><![CDATA[You can use <b>this tag</b> to display the bold text.]]></article>
-</response>
+</root>
 XML;
 
         $expected = [
-            'response' => [
+            'root' => [
                 '#text' => '',
                 'article' => [
                     [
@@ -154,6 +154,91 @@ XML;
         ];
 
         $config = new XmlToArrayConfig();
+
+        $this->assertSame($expected, (new XmlToArrayConverter($config))->convert($xml));
+    }
+
+    /** @test */
+    public function handles_namespaced_nodes_correctly()
+    {
+        $xml = <<<'XML'
+<test:root xmlns:foo="http://example.com/foo" xmlns:bar="http://example.com/bar" xmlns:test="http://example.com/test">
+    <foo:item>
+        A
+    </foo:item>
+    <foo:item>
+        B
+    </foo:item>
+    <bar:item>
+        C
+    </bar:item>
+</test:root>
+XML;
+
+        $expected = [
+            'test:root' => [
+                '#text' => '',
+                'foo:item' => [
+                    [
+                        '#text' => 'A',
+                    ],
+                    [
+                        '#text' => 'B',
+                    ],
+                ],
+                'bar:item' => [
+                    [
+                        '#text' => 'C',
+                    ],
+                ],
+            ],
+        ];
+
+        $config = new XmlToArrayConfig();
+
+        $this->assertSame($expected, (new XmlToArrayConverter($config))->convert($xml));
+    }
+
+    /** @test */
+    public function handles_namespaced_nodes_correctly_when_detach_namespaces_is_true()
+    {
+        $xml = <<<'XML'
+<test:root xmlns:foo="http://example.com/foo" xmlns:bar="http://example.com/bar" xmlns:test="http://example.com/test">
+    <foo:item>
+        A
+    </foo:item>
+    <foo:item>
+        B
+    </foo:item>
+    <bar:item>
+        C
+    </bar:item>
+</test:root>
+XML;
+
+        $expected = [
+            'root' => [
+                '#namespace' => 'test',
+                '#text' => '',
+                'item' => [
+                    [
+                        '#namespace' => 'foo',
+                        '#text' => 'A',
+                    ],
+                    [
+                        '#namespace' => 'foo',
+                        '#text' => 'B',
+                    ],
+                    [
+                        '#namespace' => 'bar',
+                        '#text' => 'C',
+                    ],
+                ],
+            ],
+        ];
+
+        $config = new XmlToArrayConfig();
+        $config->setDetachNamespaces(true);
 
         $this->assertSame($expected, (new XmlToArrayConverter($config))->convert($xml));
     }

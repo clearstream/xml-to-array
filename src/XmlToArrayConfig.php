@@ -4,15 +4,17 @@ namespace Clearstream\XmlToArray;
 
 class XmlToArrayConfig
 {
-    private bool $detachPrefixes = false;
+    private bool $detachNamespaces = false;
 
-    public function getDetachPrefixes(): bool
+    public function getDetachNamespaces(): bool
     {
-        return $this->detachPrefixes;
+        return $this->detachNamespaces;
     }
 
-    public function setDetachPrefixes(bool $detachPrefixes): void
+    public function setDetachNamespaces(bool $detachNamespaces): self
     {
-        $this->detachPrefixes = $detachPrefixes;
+        $this->detachNamespaces = $detachNamespaces;
+
+        return $this;
     }
 }

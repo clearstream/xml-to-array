@@ -51,20 +51,24 @@ class XmlToArrayConverter
 
         $documentElement = $domDocument->documentElement;
 
-        return [$documentElement->tagName => self::getArrayRepresentation($documentElement)];
+        return [$this->getElementName($documentElement) => self::getArrayRepresentation($documentElement)];
     }
 
-    private function getArrayRepresentation(DOMNode $domNode): array
+    private function getArrayRepresentation(DOMElement $domElement): array
     {
         $array = [];
 
         // Here we get all the attributes and prepend the attribute name with "@".
         // `<user id="1" name="John"/>` will result in `['@id' => '1', 'name' => 'John']`.
-        foreach (static::getAttributes($domNode) as $attribute) {
+        foreach (static::getElementAttributes($domElement) as $attribute) {
             $array['@'.$attribute->nodeName] = $attribute->nodeValue;
         }
 
-        $childNodes = static::getChildNodes($domNode);
+        if ($this->config->getDetachNamespaces()) {
+            $array['#namespace'] = $domElement->prefix;
+        }
+
+        $childNodes = static::getElementChildNodes($domElement);
 
         // `<article>Hello<article>` has 1 DOMText child node. It will result
         // in `['#text' => 'Hello']`.
@@ -81,39 +85,46 @@ class XmlToArrayConverter
         // `['option' => [['#text' => 'foo'], ['#text' => 'bar']]]`
         foreach ($childNodes as $childNode) {
             if ($childNode instanceof DOMElement) {
-                $array[$childNode->tagName] ??= [];
-                $array[$childNode->tagName][] = self::getArrayRepresentation($childNode);
+                $array[$this->getElementName($childNode)] ??= [];
+                $array[$this->getElementName($childNode)][] = self::getArrayRepresentation($childNode);
             }
         }
 
         return $array;
     }
 
+    private function getElementName(DOMElement $domElement): string
+    {
+        return $this->config->getDetachNamespaces()
+            ? $domElement->localName
+            : $domElement->tagName;
+    }
+
     /**
-     * @param DOMNode $domNode
+     * @param DOMElement $domElement
      * @return DOMNode[]
      */
-    private function getAttributes(DOMNode $domNode): array
+    private function getElementAttributes(DOMElement $domElement): array
     {
         $attributes = [];
 
-        for ($itemIndex = 0; $itemIndex < $domNode->attributes->count(); $itemIndex++) {
-            $attributes[] = $domNode->attributes->item($itemIndex);
+        for ($itemIndex = 0; $itemIndex < $domElement->attributes->count(); $itemIndex++) {
+            $attributes[] = $domElement->attributes->item($itemIndex);
         }
 
         return $attributes;
     }
 
     /**
-     * @param DOMNode $domNode
+     * @param DOMElement $domElement
      * @return DOMNode[]
      */
-    private function getChildNodes(DOMNode $domNode): array
+    private function getElementChildNodes(DOMElement $domElement): array
     {
         $childNodes = [];
 
-        for ($itemIndex = 0; $itemIndex < $domNode->childNodes->count(); $itemIndex++) {
-            $childNodes[] = $domNode->childNodes->item($itemIndex);
+        for ($itemIndex = 0; $itemIndex < $domElement->childNodes->count(); $itemIndex++) {
+            $childNodes[] = $domElement->childNodes->item($itemIndex);
         }
 
         return $childNodes;
