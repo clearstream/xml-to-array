@@ -29,7 +29,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Clearstream\\XmlToArray\\Test\\": "tests"
+            "Clearstream\\XmlToArray\\Tests\\": "tests"
         }
     }
 }
