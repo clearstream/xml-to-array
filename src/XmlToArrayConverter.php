@@ -75,7 +75,7 @@ class XmlToArrayConverter
         // `<email></email>` has 0 child nodes, but we still want the value to be
         // present (even if it's an empty string). It will result in `['#text' => '']`.
         $array['#text'] = count($childNodes) === 1 && $childNodes[0] instanceof DOMText
-            ? $this->config->getTrimText() ? trim($childNodes[0]->textContent) : $childNodes[0]->textContent
+            ? ($this->config->getTrimText() ? trim($childNodes[0]->textContent) : $childNodes[0]->textContent)
             : '';
 
         // Here we process DOMElement child nodes. The results are grouped by the tag name.
