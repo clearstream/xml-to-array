@@ -234,6 +234,46 @@ XML;
     }
 
     /** @test */
+    public function does_not_trim_values_with_namespaces_when_node_value_should_not_be_trimmed(): void
+    {
+        $xml = <<<'XML'
+<test:root xmlns:foo="http://example.com/foo" xmlns:bar="http://example.com/bar" xmlns:test="http://example.com/test">
+    <foo:shouldTrim> one </foo:shouldTrim>
+    <foo:shouldNotTrim> two </foo:shouldNotTrim>
+    <bar>
+        C
+    </bar>
+</test:root>
+XML;
+
+        $expected = [
+            'test:root' => [
+                '#text' => '',
+                'foo:shouldTrim' => [
+                    [
+                        '#text' => 'one',
+                    ],
+                ],
+                'foo:shouldNotTrim' => [
+                    [
+                        '#text' => ' two ',
+                    ],
+                ],
+                'bar' => [
+                    [
+                        '#text' => 'C',
+                    ],
+                ],
+            ],
+        ];
+
+        $config = new XmlToArrayConfig();
+        $config->setTrimExcept(['foo:shouldNotTrim']);
+
+        $this->assertSame($expected, (new XmlToArrayConverter($config))->convert($xml));
+    }
+
+    /** @test */
     public function handles_namespaced_nodes_correctly_when_detach_namespaces_is_true()
     {
         $xml = <<<'XML'
