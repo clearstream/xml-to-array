@@ -200,6 +200,58 @@ XML;
     }
 
     /** @test */
+    public function does_not_trim_values_when_trim_text_is_false(): void
+    {
+        $xml = <<<'XML'
+<test:root xmlns:foo="http://example.com/foo" xmlns:bar="http://example.com/bar" xmlns:test="http://example.com/test">
+    <foo> B </foo>
+</test:root>
+XML;
+
+        $expected = [
+            'test:root' => [
+                '#text' => '',
+                'foo' => [
+                    [
+                        '#text' => ' B ',
+                    ],
+                ],
+            ],
+        ];
+
+        $config = new XmlToArrayConfig();
+        $config->setTrimText(false);
+
+        $this->assertSame($expected, (new XmlToArrayConverter($config))->convert($xml));
+    }
+
+    /** @test */
+    public function trims_values_when_trim_text_is_true(): void
+    {
+        $xml = <<<'XML'
+<test:root xmlns:foo="http://example.com/foo" xmlns:bar="http://example.com/bar" xmlns:test="http://example.com/test">
+    <foo> B </foo>
+</test:root>
+XML;
+
+        $expected = [
+            'test:root' => [
+                '#text' => '',
+                'foo' => [
+                    [
+                        '#text' => 'B',
+                    ],
+                ],
+            ],
+        ];
+
+        $config = new XmlToArrayConfig();
+        $config->setTrimText(true);
+
+        $this->assertSame($expected, (new XmlToArrayConverter($config))->convert($xml));
+    }
+
+    /** @test */
     public function handles_namespaced_nodes_correctly_when_detach_namespaces_is_true()
     {
         $xml = <<<'XML'

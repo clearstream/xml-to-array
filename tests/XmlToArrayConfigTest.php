@@ -14,4 +14,11 @@ class XmlToArrayConfigTest extends TestCase
         $this->assertFalse((new XmlToArrayConfig())->setDetachNamespaces(false)->getDetachNamespaces());
         $this->assertTrue((new XmlToArrayConfig())->setDetachNamespaces(true)->getDetachNamespaces());
     }
+
+    /** @test */
+    public function trim_text()
+    {
+        $this->assertSame(true, (new XmlToArrayConfig())->getTrimText());
+        $this->assertSame(false, (new XmlToArrayConfig())->setTrimText(false)->getTrimText());
+    }
 }
