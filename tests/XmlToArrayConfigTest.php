@@ -16,9 +16,9 @@ class XmlToArrayConfigTest extends TestCase
     }
 
     /** @test */
-    public function trim_except()
+    public function trim_text()
     {
-        $this->assertSame([], (new XmlToArrayConfig())->getTrimExcept());
-        $this->assertSame(['foo', 'bar'], (new XmlToArrayConfig())->setTrimExcept(['foo', 'bar'])->getTrimExcept());
+        $this->assertSame(true, (new XmlToArrayConfig())->getTrimText());
+        $this->assertSame(false, (new XmlToArrayConfig())->setTrimText(false)->getTrimText());
     }
 }

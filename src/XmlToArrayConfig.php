@@ -6,7 +6,7 @@ class XmlToArrayConfig
 {
     private bool $detachNamespaces = false;
 
-    private array $trimExcept = [];
+    private bool $trimText = true;
 
     public function getDetachNamespaces(): bool
     {
@@ -20,14 +20,14 @@ class XmlToArrayConfig
         return $this;
     }
 
-    public function getTrimExcept(): array
+    public function getTrimText(): bool
     {
-        return $this->trimExcept;
+        return $this->trimText;
     }
 
-    public function setTrimExcept(array $except): self
+    public function setTrimText(bool $trimText): self
     {
-        $this->trimExcept = $except;
+        $this->trimText = $trimText;
 
         return $this;
     }
