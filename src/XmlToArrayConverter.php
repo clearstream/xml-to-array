@@ -138,7 +138,7 @@ class XmlToArrayConverter
     private function trim(DOMElement $domElement, DOMText $domText): string
     {
         return in_array($this->getElementName($domElement), $this->config->getTrimExcept())
-            ? $domElement->textContent
-            : trim($domElement->textContent);
+            ? $domText->textContent
+            : trim($domText->textContent);
     }
 }
