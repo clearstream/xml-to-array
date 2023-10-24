@@ -109,7 +109,7 @@ XML;
     }
 
     /** @test */
-    public function handles_nodes_with_text_and_other_nodes_correctly()
+    public function handles_nodes_with_text_and_non_text_nodes_correctly()
     {
         $xml = <<<'XML'
 <?xml version="1.0" encoding="UTF-8"?>
