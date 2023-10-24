@@ -70,10 +70,6 @@ class XmlToArrayConverter
 
         $childNodes = static::getElementChildNodes($domElement);
 
-        // `<article>Hello<article>` has 1 DOMText child node. It will result
-        // in `['#text' => 'Hello']`.
-        // `<email></email>` has 0 child nodes, but we still want the value to be
-        // present (even if it's an empty string). It will result in `['#text' => '']`.
         $array['#text'] = implode('', array_map(function ($childNode) {
             if ($childNode instanceof DOMText) {
                 return $this->config->getTrimText() ? trim($childNode->textContent) : $childNode->textContent;
