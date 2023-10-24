@@ -70,7 +70,7 @@ class XmlToArrayConverter
 
         $childNodes = static::getElementChildNodes($domElement);
 
-        $array['#text'] = implode('', array_map(function ($childNode) {
+        $array['#text'] = implode('', array_map(function (DOMNode $childNode) {
             if ($childNode instanceof DOMText) {
                 return $this->config->getTrimText() ? trim($childNode->textContent) : $childNode->textContent;
             }
