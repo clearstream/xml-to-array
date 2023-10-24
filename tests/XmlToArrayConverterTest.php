@@ -86,7 +86,9 @@ XML;
         $xml = <<<'XML'
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <name>Illia</name>
+    <name>
+        Illia
+    </name>
 </root>
 XML;
 
@@ -96,6 +98,42 @@ XML;
                 'name' => [
                     [
                         '#text' => 'Illia',
+                    ],
+                ],
+            ],
+        ];
+
+        $config = new XmlToArrayConfig();
+
+        $this->assertSame($expected, (new XmlToArrayConverter($config))->convert($xml));
+    }
+
+    /** @test */
+    public function handles_nodes_with_text_and_other_nodes_correctly()
+    {
+        $xml = <<<'XML'
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <question>
+        How many circles are there on this image?
+        <img src="/images/circles.png"></img>
+        Reply with number.
+    </question>
+</root>
+XML;
+
+        $expected = [
+            'root' => [
+                '#text' => '',
+                'question' => [
+                    [
+                        '#text' => 'How many circles are there on this image?Reply with number.',
+                        'img' => [
+                            [
+                                '@src' => '/images/circles.png',
+                                '#text' => '',
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -210,7 +248,7 @@ XML;
 
         $expected = [
             'test:root' => [
-                '#text' => '',
+                '#text' => PHP_EOL.'    '.PHP_EOL,
                 'foo' => [
                     [
                         '#text' => ' B ',
